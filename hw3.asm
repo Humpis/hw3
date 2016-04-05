@@ -1,6 +1,6 @@
  # Homework #3
- # name: MY_NAME
- # sbuid: MY_SBU_ID
+ # name: Vidar Minkovsky
+ # sbuid: 109756598
 
 
 ##############################
