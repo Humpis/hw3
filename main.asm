@@ -44,12 +44,13 @@ done_saving_args:
 	li $v0, 13		# syscall for open file
 	syscall
 	move $a0, $v0		# store the file discriptor in a0
+	move $s0, $v0		# store the file discriptor in s0 for closing
 	li $a1, 6		# store variable background color in a1 [0-15]
 	li $a2, 9		# store variable foreground color in a2 [0-15]
 	jal load_code_chunk
-
-# YOUR CODE SHOULD START HERE
-
+	li   $v0, 16       	# system call for close file
+  	move $a0, $s0     	# file descriptor to close
+  	syscall           	# close file
 exit_program:
 li $v0, 10
 syscall

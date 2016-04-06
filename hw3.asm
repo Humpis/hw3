@@ -30,9 +30,25 @@
 # EOF reached, -1 means invalid file.
 ##############################
 load_code_chunk:
+	blt $a1, 0, load_code_chunk_bgdefault		# if its out of bounds, set it to default color
+	bgt $a1, 15, load_code_chunk_bgdefault
+	
+load_code_chunk_bgdone:
+	blt $a1, 0, load_code_chunk_fgdefault		# if its out of bounds, set it to default color
+	bgt $a1, 15, load_code_chunk_fgdefault
+	
+load_code_chunk_fgdone:	
+
 	jr $ra
-
-
+	
+load_code_chunk_bgdefault:
+	li $a1, 15					# set bg to white
+	j load_code_chunk_bgdone
+	
+load_code_chunk_fgdefault:
+	li $a2, 0					# set fg to african american
+	j load_code_chunk_fgdone	
+		
 ##############################
 # PART II FUNCTIONS
 ##############################
