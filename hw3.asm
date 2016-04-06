@@ -38,7 +38,11 @@ load_code_chunk_bgdone:
 	bgt $a1, 15, load_code_chunk_fgdefault
 	
 load_code_chunk_fgdone:	
-
+	li   $v0, 14       				# system call for read from file
+ 	move $a0, $a0      				# file descriptor 
+ 	la   $a1, buffer   				# address of buffer from which to write???
+  	li   $a2, 44       				# hardcoded buffer length
+  	syscall            				# write to file
 	jr $ra
 	
 load_code_chunk_bgdefault:
