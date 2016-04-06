@@ -48,13 +48,13 @@ load_code_chunk_read_loop:
   	syscall            				# read from file
   	lb $t1, buffer					# set t1 to the letter read
   	beq $t1, '\n', load_code_chunk_newline		
-  	sb $t1, 4294901760
-  	sb $s0, 4294901761
+  	sb $t1, 0xffff0000
+  	sb $s0, 0xffff0001
   	#j load_code_chunk_read_loop			# loop to next letter
   	
 load_code_chunk_newline:
 
-	j load_code_chunk_read_loop
+	#j load_code_chunk_read_loop
 			
 load_code_chunk_read_loop_done:
 	jr $ra
