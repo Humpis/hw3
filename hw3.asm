@@ -38,6 +38,7 @@ load_code_chunk_bgdone:
 	bgt $a2, 15, load_code_chunk_fgdefault
 	
 load_code_chunk_fgdone:	
+	sll $a1, $a1, 4
 	add $s0, $a1, $a2				# set s0 to color
 	
 load_code_chunk_read_loop:
