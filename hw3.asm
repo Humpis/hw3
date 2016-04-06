@@ -34,15 +34,29 @@ load_code_chunk:
 	bgt $a1, 15, load_code_chunk_bgdefault
 	
 load_code_chunk_bgdone:
-	blt $a1, 0, load_code_chunk_fgdefault		# if its out of bounds, set it to default color
-	bgt $a1, 15, load_code_chunk_fgdefault
+	blt $a2, 0, load_code_chunk_fgdefault		# if its out of bounds, set it to default color
+	bgt $a2, 15, load_code_chunk_fgdefault
 	
 load_code_chunk_fgdone:	
+	add $s0, $a1, $a2				# set s0 to color
+	
+load_code_chunk_read_loop:
 	li   $v0, 14       				# system call for read from file
  	move $a0, $a0      				# file descriptor 
- 	la   $a1, buffer   				# address of buffer from which to write???
-  	li   $a2, 44       				# hardcoded buffer length
-  	syscall            				# write to file
+ 	la   $a1, buffer   				# address of buffer from which to write
+  	li   $a2, 1       				# hardcoded buffer length
+  	syscall            				# read from file
+  	lb $t1, buffer					# set t1 to the letter read
+  	beq $t1, '\n', load_code_chunk_newline		
+  	sb $t1, 4294901760
+  	sb $s0, 4294901761
+  	#j load_code_chunk_read_loop			# loop to next letter
+  	
+load_code_chunk_newline:
+
+	j load_code_chunk_read_loop
+			
+load_code_chunk_read_loop_done:
 	jr $ra
 	
 load_code_chunk_bgdefault:
@@ -158,6 +172,7 @@ apply_java_line_comments:
 .data
 #put the users search string in this buffer
 
+
 .align 2
 negative: .word -1
 
@@ -223,3 +238,4 @@ java_line_comment: .asciiz "//"
 
 .align 2
 user_search_buffer: .space 101
+buffer: .space 1
