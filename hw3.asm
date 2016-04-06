@@ -40,6 +40,9 @@ load_code_chunk_bgdone:
 load_code_chunk_fgdone:	
 	sll $a1, $a1, 4
 	add $s0, $a1, $a2				# set s0 to color
+	li $s1, 0					# number of bytes in the line
+	li $s2, 0					# number of bytes in all lines
+	li $s3, 0xffff0000				# current storage pointer
 	
 load_code_chunk_read_loop:
 	li   $v0, 14       				# system call for read from file
@@ -48,14 +51,29 @@ load_code_chunk_read_loop:
   	li   $a2, 1       				# hardcoded buffer length
   	syscall            				# read from file
   	lb $t1, buffer					# set t1 to the letter read
-  	beq $t1, '\n', load_code_chunk_newline		
-  	sb $t1, 0xffff0000
-  	sb $s0, 0xffff0001
-  	#j load_code_chunk_read_loop			# loop to next letter
+  	beq $t1, '\n', load_code_chunk_newline		# if it reads \n, put in spaces and go to next line
+  	sb $t1, ($s3)					# store the ascii letter
+  	addi $s3, $s3, 1				# increment storage pointer
+  	sb $s0, ($s3)					# store the color 
+  	addi $s3, $s3, 1				# increment storage pointer
+  	addi $s1, $s1, 2				# icrement line byte counter
+  	addi $s2, $s2, 2				# icrement total byte counter
+  	j load_code_chunk_read_loop			# loop to next letter
   	
 load_code_chunk_newline:
-
-	#j load_code_chunk_read_loop
+	beq $s1, 160, load_code_chunk_newline_done
+	li $t1, ' '					# put space in t1
+	sb $t1, ($s3)					# store the ascii letter
+  	addi $s3, $s3, 1				# increment storage pointer
+  	sb $s0, ($s3)					# store the color 
+  	addi $s3, $s3, 1				# increment storage pointer
+  	addi $s1, $s1, 2				# icrement line byte counter
+  	addi $s2, $s2, 2				# icrement total byte counter
+	j load_code_chunk_newline
+	
+load_code_chunk_newline_done:
+	li $s1, 0					# reset bytes in line counter
+	j load_code_chunk_read_loop	
 			
 load_code_chunk_read_loop_done:
 	jr $ra
