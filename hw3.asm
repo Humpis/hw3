@@ -133,6 +133,44 @@ clear_screen_done:
 # @param BG the four bit value specifying the background color
 ##############################
 apply_cell_color:
+	bge $a0, 0, apply_cell_color_igood		# i is greater than or = 0
+	j apply_cell_color_done				# else return
+	
+apply_cell_color_igood:
+	ble $a0, 24, apply_cell_color_igood2		# i is <= 24
+	j apply_cell_color_done				# else return
+	
+apply_cell_color_igood2:
+	bge $a1, 0, apply_cell_color_jgood		# j is >=0
+	j apply_cell_color_done				# else return
+	
+apply_cell_color_jgood:
+	ble $a1, 79, apply_cell_color_chk_fg		# j is <= 79
+	j apply_cell_color_done				# else return
+
+apply_cell_color_chk_fg:
+	bge $a2, 0, apply_cell_color_fggood		# fg is greater than or = 0
+	j apply_cell_color_chk_bg			# else go to bgcolor
+	
+apply_cell_color_fggood:
+	ble $a2, 15, apply_cell_color_change_fg		# fg is <= 15
+	j apply_cell_color_chk_bg			# else go to bgcolor
+	
+apply_cell_color_change_fg:	
+	###todo
+	
+apply_cell_color_chk_bg:
+	bge $a3, 0, apply_cell_color_bggood		# bg is greater than or = 0
+	j apply_cell_color_done				# else return
+	
+apply_cell_color_fggood:
+	ble $a2, 15, apply_cell_color_change_bg		# bg is <= 15
+	j apply_cell_color_done				# else return
+	
+apply_cell_color_change_fg:
+	###todo
+	
+apply_cell_color_done:
 	jr $ra
 
 
