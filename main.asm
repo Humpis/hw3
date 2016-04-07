@@ -39,17 +39,19 @@ one_arg:
 #you are done saving args now, start writing your code.
 done_saving_args:
 	lw $a0, arg1		# put the filename into a0
+	#lw $t9, 3($a0)
+	#addi $a0, $a0, -5
 	li $a1, 0		# 0 for read		
 	li $a2, 0		# ignore mode
 	li $v0, 13		# syscall for open file
 	syscall
 	move $a0, $v0		# store the file discriptor in a0
-	move $s0, $v0		# store the file discriptor in s0 for closing
+	move $s7, $v0		# store the file discriptor in s0 for closing
 	li $a1, 6		# store variable background color in a1 [0-15]
 	li $a2, 9		# store variable foreground color in a2 [0-15]
 	jal load_code_chunk
 	li   $v0, 16       	# system call for close file
-  	move $a0, $s0     	# file descriptor to close
+  	move $a0, $s7     	# file descriptor to close
   	syscall           	# close file
 exit_program:
 li $v0, 10

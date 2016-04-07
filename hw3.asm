@@ -46,7 +46,7 @@ load_code_chunk_fgdone:
 	
 load_code_chunk_read_loop:
 	li   $v0, 14       				# system call for read from file
- 	move $a0, $a0      				# file descriptor 
+ 	#move $a0, $a0      				# file descriptor 
  	la   $a1, buffer   				# address of buffer from which to write
   	li   $a2, 1       				# hardcoded buffer length
   	syscall            				# read from file
