@@ -133,6 +133,15 @@ clear_screen_done:
 # @param BG the four bit value specifying the background color
 ##############################
 apply_cell_color:
+	li $t0, 0xffff0000				# base memory
+	li $t1, 160					# for mult
+	mul $a0, $a0, $t1				# set a0 to number of bytes of i
+	li $t1, 2  					# for mult
+	mul $a1, $a1, $t1				# set a1 to number of bytes of j
+	add $t0, $t0, $a0				# add i bytes to base adress
+	add $t0, $t0, $a1				# add i bytes to base adress
+	addi $t0, $t0, 1				# add 1 byte to get to the color
+	
 	bge $a0, 0, apply_cell_color_igood		# i is greater than or = 0
 	j apply_cell_color_done				# else return
 	
@@ -156,19 +165,30 @@ apply_cell_color_fggood:
 	ble $a2, 15, apply_cell_color_change_fg		# fg is <= 15
 	j apply_cell_color_chk_bg			# else go to bgcolor
 	
-apply_cell_color_change_fg:	
-	###todo
+apply_cell_color_change_fg:
+	lb $t2, ($t0)					# set t2 to the color in t0
+	li $t3, 0x00000001				# for anding
+	and $t1, $t2, $t3				# set t2 to just the fg hex bit of the color
+	sub $t2, $t2, $t1				# set t2 to just the bg color by subtracting the fg
+	add $t2, $t2, $a2				# set t2 to the new color by adding the new fg
+	sb $t2, ($t0)					# store the new color
 	
 apply_cell_color_chk_bg:
 	bge $a3, 0, apply_cell_color_bggood		# bg is greater than or = 0
 	j apply_cell_color_done				# else return
 	
-apply_cell_color_fggood:
-	ble $a2, 15, apply_cell_color_change_bg		# bg is <= 15
+apply_cell_color_bggood:
+	ble $a3, 15, apply_cell_color_change_bg		# bg is <= 15
 	j apply_cell_color_done				# else return
 	
-apply_cell_color_change_fg:
-	###todo
+apply_cell_color_change_bg:
+	lb $t2, ($t0)					# set t2 to the color in t0
+	li $t3, 0x00000010				# for anding
+	and $t1, $t2, $t3				# set t2 to just the bg hex bit of the color
+	sub $t2, $t2, $t1				# set t2 to just the fg color by subtracting the bg
+	sll $a3, $a3, 4					# shift the bg color
+	add $t2, $t2, $a3				# set t2 to the new color by adding the new bg
+	sb $t2, ($t0)					# store the new color
 	
 apply_cell_color_done:
 	jr $ra

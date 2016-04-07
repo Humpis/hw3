@@ -47,13 +47,18 @@ done_saving_args:
 	syscall
 	move $a0, $v0		# store the file discriptor in a0
 	move $s7, $v0		# store the file discriptor in s0 for closing
-	li $a1, 6		# store variable background color in a1 [0-15]
-	li $a2, 9		# store variable foreground color in a2 [0-15]
+	li $a1, 15		# store variable background color in a1 [0-15]
+	li $a2, 0		# store variable foreground color in a2 [0-15]
 	jal load_code_chunk
 	li   $v0, 16       	# system call for close file
   	move $a0, $s7     	# file descriptor to close
   	syscall           	# close file
-  	jal clear_screen
+  	#jal clear_screen
+  	li $a0, 0
+  	li $a1, 0
+  	li $a2, 15
+  	li $a3, 15
+  	jal apply_cell_color
 exit_program:
 li $v0, 10
 syscall
