@@ -30,6 +30,11 @@
 # EOF reached, -1 means invalid file.
 ##############################
 load_code_chunk:
+	bne $a0, 0xffffffff, load_code_chunk_valid	# if file desc is non meg, go for it
+	li $v0, -1					# return -1
+	j load_code_chunk_read_loop_done
+	
+load_code_chunk_valid:
 	blt $a1, 0, load_code_chunk_bgdefault		# if its out of bounds, set it to default color
 	bgt $a1, 15, load_code_chunk_bgdefault
 	
@@ -51,6 +56,7 @@ load_code_chunk_read_loop:
   	li   $a2, 1       				# hardcoded buffer length
   	syscall            				# read from file
   	lb $t1, buffer					# set t1 to the letter read
+  	beq $s2, 4000, load_code_chunk_read_loop_done	# when the screen is full
   	beq $t1, '\n', load_code_chunk_newline		# if it reads \n, put in spaces and go to next line
   	sb $t1, ($s3)					# store the ascii letter
   	addi $s3, $s3, 1				# increment storage pointer
