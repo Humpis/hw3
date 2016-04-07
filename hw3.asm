@@ -100,6 +100,20 @@ load_code_chunk_fgdefault:
 # This function should go through the whole memory array and clear the contents of the screen.
 ##############################
 clear_screen:
+	li $s0, 0x000000f0				# set s0 to white on black
+	li $s2, 0					# number of bytes in all lines
+	li $s3, 0xffff0000				# current storage pointer
+clear_screen_loop:
+	beq $s2, 4000, clear_screen_done
+	li $t1, ' '					# put space in t1
+	sb $t1, ($s3)					# store the ascii letter
+  	addi $s3, $s3, 1				# increment storage pointer
+  	sb $s0, ($s3)					# store the color 
+  	addi $s3, $s3, 1				# increment storage pointer
+  	addi $s2, $s2, 2				# icrement total byte counter
+	j clear_screen_loop
+	
+clear_screen_done:
 	jr $ra
 
 
