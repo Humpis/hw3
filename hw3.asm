@@ -207,12 +207,13 @@ clear_background:
 	blt $a0, 0, clear_background_done		# return if invalid bg
 	bgt $a0, 15, clear_background_done		# return if invalid bg
 	sll $a0, $a0, 4					# shift the bg to where its supposed to go
-	blt $a1, 0, clear_background_defualt		# default if invalid newbg
+	blt $a1, 0, clear_background_default		# default if invalid newbg
 	bgt $a1, 15, clear_background_default		# default if invalid newbg
 	sll $a1, $a1, 4					# shift the newbg to where its supposed to go
 	
 clear_background_loop:
-	beq $t0, 0xffff0fa1, clear_background_done	# reached end of mem
+	li $t4, 0xffff0fa1
+	beq $t0, $t4, clear_background_done		# reached end of mem
 	lb $t2, ($t0)					# set t2 to the color in t0
 	li $t3, 0x000000f0				# for anding
 	and $t1, $t2, $t3				# set t1 to just the bg hex bit of the color
@@ -222,14 +223,14 @@ clear_background_loop:
 	
 clear_background_loop_valid:	
 	sub $t2, $t2, $t1				# set t2 to just the fg color by subtracting the bg
-	add $t2, $t2, $a3				# set t2 to the new color by adding the new bg
+	add $t2, $t2, $a1				# set t2 to the new color by adding the new bg
 	sb $t2, ($t0)					# store the new color
 	addi $t0, $t0, 2				# increment to next color byte
 	j clear_background_loop
 	
 clear_background_default:
 	li $a1, 15					# set newbg to white 
-	sll $a1, 4					# shift the newbg to where its supposed to go
+	sll $a1, $a1, 4					# shift the newbg to where its supposed to go
 	j clear_background_loop
 	
 clear_background_done:

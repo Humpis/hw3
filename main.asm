@@ -54,11 +54,12 @@ done_saving_args:
   	move $a0, $s7     	# file descriptor to close
   	syscall           	# close file
   	#jal clear_screen
-  	li $a0, 0
-  	li $a1, 0
-  	li $a2, 15
-  	li $a3, 13
-  	jal apply_cell_color
+  	li $a0, 15
+  	li $a1, 4
+  	jal clear_background
+  	#li $a2, 15
+  	#li $a3, 13
+  	#jal apply_cell_color
 exit_program:
 li $v0, 10
 syscall
