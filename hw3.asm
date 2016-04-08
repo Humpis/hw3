@@ -167,7 +167,7 @@ apply_cell_color_fggood:
 	
 apply_cell_color_change_fg:
 	lb $t2, ($t0)					# set t2 to the color in t0
-	li $t3, 0x00000001				# for anding
+	li $t3, 0x0000000f				# for anding
 	and $t1, $t2, $t3				# set t2 to just the fg hex bit of the color
 	sub $t2, $t2, $t1				# set t2 to just the bg color by subtracting the fg
 	add $t2, $t2, $a2				# set t2 to the new color by adding the new fg
@@ -183,7 +183,7 @@ apply_cell_color_bggood:
 	
 apply_cell_color_change_bg:
 	lb $t2, ($t0)					# set t2 to the color in t0
-	li $t3, 0x00000010				# for anding
+	li $t3, 0x000000f0				# for anding
 	and $t1, $t2, $t3				# set t2 to just the bg hex bit of the color
 	sub $t2, $t2, $t1				# set t2 to just the fg color by subtracting the bg
 	sll $a3, $a3, 4					# shift the bg color

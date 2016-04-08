@@ -57,7 +57,7 @@ done_saving_args:
   	li $a0, 0
   	li $a1, 0
   	li $a2, 15
-  	li $a3, 15
+  	li $a3, 13
   	jal apply_cell_color
 exit_program:
 li $v0, 10
